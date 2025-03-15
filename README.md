@@ -1,38 +1,44 @@
-Role Name
-=========
+# DB Role
 
-A brief description of the role goes here.
+This role creates and manages an AWS RDS MySQL instance and its associated subnet group. It also sets facts for the RDS endpoint and other outputs.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- **Ansible**: Version 2.9 or higher.
+- **AWS Credentials**: Configured on the target machine (e.g., using `aws configure` or environment variables).
+- **Python Dependencies**:
+  - `boto3` and `botocore` (required for AWS modules).
+  - Install them using:
+    ```bash
+    pip install boto3 botocore
+    ```
+- **Ansible Collections**:
+  - `community.aws` (for AWS modules).
+  - Install it using:
+    ```bash
+    ansible-galaxy collection install community.aws
+    ```
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### Default Variables (defined in `vars/main.yml`)
+- `aws_region`: The AWS region where the RDS instance will be created. Default: `"us-east-1"`.
+- `db_instance_identifier`: The identifier for the RDS instance. Default: `"mydatabase"`.
+- `engine`: The database engine. Default: `"mysql"`.
+- `engine_version`: The database engine version. Default: `"8.0"`.
+- `db_instance_class`: The instance class for the RDS instance. Default: `"db.t3.micro"`.
+- `allocated_storage`: The allocated storage size in GB. Default: `20`.
+- `username`: The master username for the RDS instance. Default: `"admin"`.
+- `password`: The master password for the RDS instance (encrypted using Ansible Vault).
+- `db_name`: The name of the database to create. Default: `"todos"`.
+- `sg_name`: The name of the security group for the RDS instance. Default: `"WebSG"`.
+- `db_subnet_group_name`: The name of the RDS subnet group. Default: `"my-rds-subnet-group"`.
 
-Dependencies
-------------
+### Output Variables (Set as Facts)
+- `RDS_ENDPOINT`: The endpoint address of the RDS instance.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Dependencies
 
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+This role does not depend on any other roles. However, it requires the following:
+- The `community.aws` collection (installed via Ansible Galaxy).
+- AWS credentials configured on the target machine.
