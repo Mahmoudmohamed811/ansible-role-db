@@ -1,0 +1,38 @@
+---
+# tasks file for roles/db_role
+- name: Create RDS Subnet Group
+  amazon.aws.rds_subnet_group:
+    state: present
+    name: "{{ db_subnet_group_name }}"
+    region: "{{ aws_region }}"
+    description: "RDS subnet group for Multi-AZ deployment"
+    subnets:
+      - "{{ private_subnet1_id }}"
+      - "{{ private_subnet2_id }}"
+  register: rds_subnet_group
+
+- name: Create RDS MySQL Instance
+  community.aws.rds_instance:
+    region: "{{ aws_region }}"
+    db_instance_identifier: "{{ db_instance_identifier }}"
+    engine: "{{ engine }}"
+    engine_version: "{{ engine_version }}"
+    db_instance_class: "{{ db_instance_class }}"
+    allocated_storage: "{{ allocated_storage }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    db_name: "{{ db_name }}"
+    publicly_accessible: no
+    vpc_security_group_ids:
+      - "{{ db_sg_id }}"
+    db_subnet_group_name: "{{ db_subnet_group_name }}"    
+    backup_retention_period: 0
+    monitoring_interval: 0
+    multi_az: yes
+    state: present
+  register: rds_result
+
+- name: Store RDS Endpoint as a fact
+  set_fact:
+    RDS_ENDPOINT: "{{ rds_result.endpoint.address }}"
+    cacheable: yes 

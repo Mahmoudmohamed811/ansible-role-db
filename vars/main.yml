@@ -1,0 +1,20 @@
+---
+# vars file for roles/db_role
+
+aws_region: "us-east-1"
+db_instance_identifier: "mydatabase"
+engine: "mysql"
+engine_version: "8.0"
+db_instance_class: "db.t3.micro"
+allocated_storage: 20
+username: "admin"
+password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63386531333135643764636335656466393863326161363265613331303936303934303331383564
+          3532356362373337653662316437363461616531623737390a663137656637323161656239336562
+          37313931346536623539613164343763623966303535306531303161626532343332383237353030
+          3463343139623466330a346639636132656639326535616435613837303937663163313562626139
+          3834
+db_name: "todos"
+sg_name: "WebSG"
+db_subnet_group_name: "my-rds-subnet-group"  
